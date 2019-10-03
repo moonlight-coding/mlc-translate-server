@@ -50,17 +50,74 @@ class Database
   }
   
   async list() {
-    
-    console.log("start");
-    
-    let rows = await this.all("SELECT * FROM translation;");
-    
-    console.log("finished..");
-    //console.log(rows);
-    return rows;
+    return this.all("SELECT * FROM translation;");
   }
   
-  async all(query) {
+  async query(params) {
+    
+    if(params.groups != null && params.groups.length > 0) {
+      return this.queryGroups(params);
+    }
+    
+    let queryParams = [];
+    let condition = "TRUE";
+    
+    if(params.project != null) {
+      condition = "project = ?";
+      queryParams.push(params.project);
+    }
+    if(params.locale != null) {
+      condition += " AND locale = ?";
+      queryParams.push(params.locale);
+    }
+    
+    let sql = `SELECT * FROM translation WHERE ${condition} ORDER BY id ASC`;
+    
+    if(params.history !== true) {
+      sql = `SELECT * FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key)`;
+    }
+    
+    let stmt = this.db.prepare(sql);
+    
+    return new Promise((resolve) => {
+      let endCallback = (err, rows) => {
+        resolve(rows);
+      };
+      
+      queryParams.push(endCallback);
+      
+      stmt.all.apply(stmt, queryParams);
+    
+      stmt.finalize();
+    });
+  }
+  
+  async queryGroups(params) {
+    let condition = "`group` IN (" + params.groups.map(g => '?').join(',') + ")";
+    let queryParams = params.groups.slice(0);
+    
+    let sql = `SELECT * FROM translation WHERE ${condition} ORDER BY id ASC`;
+    
+    if(params.history !== true) {
+      sql = `SELECT * FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key)`;
+    }
+    
+    let stmt = this.db.prepare(sql);
+    
+    return new Promise((resolve) => {
+      let endCallback = (err, rows) => {
+        resolve(rows);
+      };
+      
+      queryParams.push(endCallback);
+      
+      stmt.all.apply(stmt, queryParams);
+    
+      stmt.finalize();
+    });
+  }
+  
+  async all(query, parameters) {
     return new Promise((resolve, reject) => {
       this.db.all(query, (err, rows) => {
         resolve(rows);
