@@ -5,21 +5,24 @@ const fs = require('fs');
 const Database = require('./services/database.js');
 const cors = require('cors');
 
-let configFilename = 'config.js';
+let configFilename = path.join(__dirname, '..', '..', 'config.js');
 
+// the conf file is specified
 if(process.argv.length == 3) {
-  configFilename = process.argv[2];
+  configFilename = path.resolve(process.argv[2]);
 }
 
 // load the config
-const configPath = path.join(__dirname, '..', '..', configFilename);
-
-if(!fs.existsSync(configPath)) {
-  console.error("[!] config.js must be created and completed. Use config.example.js to create it.");
+if(!fs.existsSync(configFilename)) {
+  if(process.argv.length == 3)
+    console.error(`[!] ${configFilename} file doesn't exist..`);
+  else
+    console.error("[!] config.js must be created and completed. Use config.example.js to create it.");
+  
   process.exit(1);
 }
 
-var config = require(configPath);
+var config = require(configFilename);
 
 const app = express();
 

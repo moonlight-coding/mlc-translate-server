@@ -1,7 +1,7 @@
 {
   "name": "mlc-translate-server",
   "version": "1.0.0",
-  "description": "expressjs API to store translations, make cache files. Made to be used with mlc-angular-translate.",
+  "description": "expressjs API to store translations, make cache files. Made to be used with mlc-angularjs-translate.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,12 @@
   },
   "devDependencies": {
     "axios": "^0.19.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonlight-coding/mlc-translate-server.git"
+  },
+  "bin": {
+    "mlc-translate-server": "./index.js"
   }
 }
