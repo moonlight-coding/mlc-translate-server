@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const Database = require('./services/database.js');
+const cors = require('cors');
 
 let configFilename = 'config.js';
 
@@ -25,8 +26,9 @@ const app = express();
 // parse application/json requests body automatically
 app.use(bodyParser.json());
 
-// all the files in web/ are public
-app.use(express.static('web'));
+// allow all CORS origins. 
+// TODO: should be configured via config.js
+app.use(cors());
 
 // instanciate the services
 let services = {
