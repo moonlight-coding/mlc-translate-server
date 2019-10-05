@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const Database = require('./services/database.js');
+const TimestampsContainer = require('./services/timestamps-container.js');
 const cors = require('cors');
 
 let configFilename = path.join(__dirname, '..', '..', 'config.js');
@@ -35,7 +36,8 @@ app.use(cors());
 
 // instanciate the services
 let services = {
-  database: new Database(config.db)
+  database: new Database(config.db),
+  timestamps: new TimestampsContainer()
 };
 
 // we load the available endpoints

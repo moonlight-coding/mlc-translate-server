@@ -4,5 +4,6 @@ CREATE TABLE translation(
   project TEXT NOT NULL,
   'group' TEXT NOT NULL,
   key TEXT NOT NULL,
-  value TEXT NOT NULL
+  value TEXT NOT NULL,
+  creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );

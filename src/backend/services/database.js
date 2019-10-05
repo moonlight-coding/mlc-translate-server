@@ -29,14 +29,33 @@ class Database
     this.db.close();
   }
   
-  createTranslation(locale, project, group, key, value) {
-    this.db.serialize(() => {
+  async createTranslation(locale, project, group, key, value) {
+    //this.db.serialize(() => {
+    let promise = new Promise((resolve) => {
+    
       let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value) VALUES (?, ?, ?, ?, ?)");
       
-      stmt.run(locale, project, group, key, value);
+      stmt.run(locale, project, group, key, value, resolve);
       
       stmt.finalize();
     });
+    
+    return promise.then(() => {
+      return new Promise((resolve, reject) => {
+        let sql = `SELECT * FROM translation WHERE locale = ? AND project = ? AND \`group\` = ? AND key = ? ORDER BY id DESC LIMIT 1`;
+        
+        let stmt = this.db.prepare(sql);
+        
+        stmt.all(locale, project, group, key, (err, rows) => {
+          if(rows.length > 0)
+            resolve(rows[0]);
+          else {
+            reject(err);
+          }
+        });
+      });
+    });
+    //});
   }
   
   removeTranslation(id) {

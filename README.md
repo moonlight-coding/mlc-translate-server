@@ -45,13 +45,12 @@ Note: The database schema is clearly optimizable.
 - Has api endpoints to:
   - create a translation
   - remove a translation
-  - make a query to fetch the translations which interest us (can select a locale, a project, a group etc...), with or without the history of each translation.
+  - make a query to fetch the translations which interest us (can select a locale, a project, a group etc...), with or without the history of each translation. Each group can be combined with its timestamp, to only fetch the groups that have expired.
+- stores the creation date in the translations for cache support
 
 ## TODO
 
-- store the creation date in the translations
-- store in a cache file the timestamp of the last edition of a single project, and for each of its groups.
-- add in the endpoint `/query` a body field `timestamp`. `/query` will return the translation of the project/group, only if the timestamp of that project/group is superior to the given timestamp. The new timestamp must be returned too.
+- store in a cache file the timestamps, currently the timestamps are rebuilt by using the endpoints of the API.
 
 ## Installation
 
