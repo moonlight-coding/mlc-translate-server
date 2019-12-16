@@ -64,7 +64,7 @@ class Database
       let valuesSql = translations.map(() => {
         return "(?, ?, ?, ?, ?)";
       });
-      console.log("INSERT INTO translation(locale, project, 'group', key, value) VALUES " + valuesSql.join(", "));
+      
       let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value) VALUES " + valuesSql.join(", "));
       let args = [];
       
@@ -109,14 +109,17 @@ class Database
     });
   }
   
-  async list() {
-    return this.all("SELECT * FROM translation;");
+  async queryCount(params) {
+    let countParams = params;
+    countParams.per_page = null;
+    countParams.page = null;
+    return this.query(countParams, true);
   }
   
-  async query(params) {
+  async query(params, returnCount = false) {
     
     if(params.groups != null && params.groups.length > 0) {
-      return this.queryGroups(params);
+      return this.queryGroups(params, returnCount);
     }
     
     let queryParams = [];
@@ -130,12 +133,24 @@ class Database
       condition += " AND locale = ?";
       queryParams.push(params.locale);
     }
+    if(params.group != null) {
+      condition += " AND `group` = ?";
+      queryParams.push(params.group);
+    }
+    if(params.key != null) {
+      condition += " AND key = ?";
+      queryParams.push(params.key);
+    }
     
-    let sql = `SELECT * FROM translation WHERE ${condition} ORDER BY id ASC`;
+    let returnSql = returnCount ? 'COUNT(id) as total' : '*';
+    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page}` : "";
+    let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
     
     if(params.history !== true) {
-      sql = `SELECT * FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key)`;
+      sql = `SELECT ${returnSql} FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key) ORDER BY id ASC ${limitSql}`;
     }
+    
+    console.log(sql);
     
     let stmt = this.db.prepare(sql);
     
@@ -152,14 +167,16 @@ class Database
     });
   }
   
-  async queryGroups(params) {
+  async queryGroups(params, returnCount = false) {
+    let returnSql = returnCount ? 'COUNT(id) as total' : '*';
+    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page}` : "";
     let condition = "`group` IN (" + params.groups.map(g => '?').join(',') + ")";
     let queryParams = params.groups.slice(0);
     
-    let sql = `SELECT * FROM translation WHERE ${condition} ORDER BY id ASC`;
+    let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
     
     if(params.history !== true) {
-      sql = `SELECT * FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key)`;
+      sql = `SELECT ${returnSql} FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key) ORDER BY id ASC ${limitSql}`;
     }
     
     let stmt = this.db.prepare(sql);
@@ -184,6 +201,7 @@ class Database
       })
     });
   }
+  
 }
 
 module.exports = Database;

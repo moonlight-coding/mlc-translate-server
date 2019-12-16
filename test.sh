@@ -7,6 +7,7 @@ PID=$!
 
 sleep 0.5
 
-node test.js
+node tests/00-basic.js
+node tests/01-versions.js
 
 kill $PID

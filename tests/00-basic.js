@@ -38,6 +38,10 @@ async function importTranslations(locale, project, translations) {
 async function test() {
   await list();
   await create("en_GB", "admin", "users", "Users", "Users");
+  await create("en_GB", "admin", "users", "Users", "Users2");
+  await create("en_GB", "admin", "users", "Users", "Users3");
+  await create("en_GB", "admin", "users", "Users", "Users4");
+  await create("en_GB", "admin", "users", "Users", "Users5");
   await create("en_GB", "front", "front.users", "Users", "Users");
   await create("en_GB", "admin", "test", "Users", "Users");
   await list();
