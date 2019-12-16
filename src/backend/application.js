@@ -45,6 +45,7 @@ require('./endpoints/query.js')(app, config, services);
 require('./endpoints/translation/create.js')(app, config, services);
 require('./endpoints/translation/remove.js')(app, config, services);
 require('./endpoints/translation/list.js')(app, config, services);
+require('./endpoints/import.js')(app, config, services);
 
 // start the server
 app.listen(config.port);

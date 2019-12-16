@@ -27,6 +27,14 @@ async function query(params) {
   });
 }
 
+async function importTranslations(locale, project, translations) {
+  return axios.post(URL('/import'), {
+    locale, 
+    project, 
+    translations
+  });
+}
+
 async function test() {
   await list();
   await create("en_GB", "admin", "users", "Users", "Users");
@@ -40,9 +48,21 @@ async function test() {
   await create("en_GB", "admin", "users", "Users", "Usersss");
   await create("en_GB", "admin", "users", "Users", "User List");
   await list();
+  
+  await list();
+  await importTranslations("en_GB", "admin", [
+    {group: "users1", key: "key1", value: "value1"},
+    {group: "users2", key: "key2", value: "value2"},
+    {group: "users3", key: "key3", value: "value3"},
+    {group: "users4", key: "key4", value: "value4"},
+    {group: "users5", key: "key5", value: "value5"}
+  ]);
+  
+  
   console.log("query projet 'admin' & history");
   let queryResult = await query({
     project: "admin",
+    groups: null,
     history: true
   });
   console.log(queryResult);
@@ -60,8 +80,14 @@ async function test() {
   console.log(queryResult);
   
   console.log("query all");
-  queryResult = await query({});
-  console.log(queryResult);
+  try {
+    queryResult = await query({});
+  }
+  catch(e) {
+    console.log("Received an error:");
+    console.log(e.response.data);
+    console.log("We must specify the project, 'all' is not allowed");
+  }
   
   console.log("query 2");
   queryResult = await query({

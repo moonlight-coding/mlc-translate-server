@@ -20,6 +20,10 @@ module.exports = (app, config, services) => {
       return;
     }
     
+    if(!('groups' in queryBody)) {
+      queryBody.groups = null;
+    }
+    
     // load the project Timestamps
     let projectTimestamps = services.timestamps.getProject(queryBody.project);
     

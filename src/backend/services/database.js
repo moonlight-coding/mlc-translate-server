@@ -58,6 +58,47 @@ class Database
     //});
   }
   
+  async createTranslations(locale, project, translations) {
+    let promise = new Promise((resolve) => {
+    
+      let valuesSql = translations.map(() => {
+        return "(?, ?, ?, ?, ?)";
+      });
+      console.log("INSERT INTO translation(locale, project, 'group', key, value) VALUES " + valuesSql.join(", "));
+      let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value) VALUES " + valuesSql.join(", "));
+      let args = [];
+      
+      translations.forEach((translation) => {
+        args.push(locale);
+        args.push(project);
+        args.push(translation.group);
+        args.push(translation.key);
+        args.push(translation.value);
+      });
+      
+      args.push(resolve);
+      stmt.run(...args);
+      
+      stmt.finalize();
+    });
+    
+    return promise.then(() => {
+      return new Promise((resolve, reject) => {
+        let sql = `SELECT * FROM translation WHERE locale = ? AND project = ? ORDER BY id DESC LIMIT 1`;
+        
+        let stmt = this.db.prepare(sql);
+        
+        stmt.all(locale, project, (err, rows) => {
+          if(rows.length > 0)
+            resolve(rows[0]);
+          else {
+            reject(err);
+          }
+        });
+      });
+    });
+  }
+  
   removeTranslation(id) {
     this.db.serialize(() => {
       let stmt = this.db.prepare("DELETE FROM translation WHERE id = ?");
