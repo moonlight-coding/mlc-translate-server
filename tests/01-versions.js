@@ -11,6 +11,12 @@ async function list(parameters = null) {
   });
 }
 
+async function get(id) {
+  return axios.get(URL('/translations/' + id)).then((resp) => {
+    return resp.data;
+  });
+}
+
 function showResult(rows)
 {
   for(let row of rows) {
@@ -45,6 +51,11 @@ async function test() {
     per_page: 1,
     page: 0
   });
+  console.log(queryResult);
+  
+  console.log("============================");
+  console.log("Fetch row 7");
+  queryResult = await get(7);
   console.log(queryResult);
   //showResult(queryResult);
 }

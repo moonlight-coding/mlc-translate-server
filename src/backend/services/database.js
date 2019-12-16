@@ -29,6 +29,22 @@ class Database
     this.db.close();
   }
   
+  async getRow(id) {
+    return new Promise((resolve, reject) => {
+      let sql = `SELECT * FROM translation WHERE id = ?`;
+      
+      let stmt = this.db.prepare(sql);
+      
+      stmt.all(id, (err, rows) => {
+        if(rows.length > 0)
+          resolve(rows[0]);
+        else {
+          reject(err);
+        }
+      });
+    });
+  }
+  
   async createTranslation(locale, project, group, key, value) {
     //this.db.serialize(() => {
     let promise = new Promise((resolve) => {
