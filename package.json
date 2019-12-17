@@ -1,6 +1,6 @@
 {
   "name": "mlc-translate-server",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "expressjs API to store translations, make cache files. Made to be used with mlc-angularjs-translate.",
   "main": "index.js",
   "scripts": {
