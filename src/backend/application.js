@@ -28,7 +28,9 @@ var config = require(configFilename);
 const app = express();
 
 // parse application/json requests body automatically
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb'
+}));
 
 // allow all CORS origins. 
 // TODO: should be configured via config.js
