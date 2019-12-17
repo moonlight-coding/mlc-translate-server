@@ -159,14 +159,12 @@ class Database
     }
     
     let returnSql = returnCount ? 'COUNT(id) as total' : '*';
-    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page}` : "";
+    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page * params.per_page}` : "";
     let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
     
     if(params.history !== true) {
       sql = `SELECT ${returnSql} FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key) ORDER BY id ASC ${limitSql}`;
     }
-    
-    console.log(sql);
     
     let stmt = this.db.prepare(sql);
     
@@ -185,7 +183,7 @@ class Database
   
   async queryGroups(params, returnCount = false) {
     let returnSql = returnCount ? 'COUNT(id) as total' : '*';
-    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page}` : "";
+    let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page * params.per_page}` : "";
     let condition = "`group` IN (" + params.groups.map(g => '?').join(',') + ")";
     let queryParams = params.groups.slice(0);
     

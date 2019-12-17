@@ -48,8 +48,16 @@ async function test() {
   console.log("- list the distinct keys with pagination");
   queryResult = await list({
     project: "admin",
-    per_page: 1,
+    per_page: 2,
     page: 0
+  });
+  console.log(queryResult);
+  
+  console.log("- list the distinct keys with pagination");
+  queryResult = await list({
+    project: "admin",
+    per_page: 2,
+    page: 1
   });
   console.log(queryResult);
   
