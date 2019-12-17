@@ -216,6 +216,26 @@ class Database
     });
   }
   
+  async listMissingTranslations(project, locale) {
+    let sql = `SELECT t.\`group\`, key from translation as t WHERE project = ? AND (t.\`group\`, key) NOT IN (
+      SELECT t2.\`group\`, t2.key FROM translation as t2 WHERE t2.project = ? AND t2.locale = ?
+    ) GROUP BY t.\`group\`, key ORDER BY t.\`group\` asc, t.key asc`;
+    let queryParams = [project, project, locale];
+    
+    let stmt = this.db.prepare(sql);
+    
+    return new Promise((resolve) => {
+      let endCallback = (err, rows) => {
+        resolve(rows);
+      };
+      
+      queryParams.push(endCallback);
+      
+      stmt.all.apply(stmt, queryParams);
+    
+      stmt.finalize();
+    });
+  }
 }
 
 module.exports = Database;

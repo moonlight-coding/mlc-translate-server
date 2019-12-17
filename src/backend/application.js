@@ -47,6 +47,7 @@ require('./endpoints/translation/remove.js')(app, config, services);
 require('./endpoints/translation/list.js')(app, config, services);
 require('./endpoints/translation/get.js')(app, config, services);
 require('./endpoints/import.js')(app, config, services);
+require('./endpoints/export.js')(app, config, services);
 
 // start the server
 app.listen(config.port);

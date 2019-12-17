@@ -9,5 +9,6 @@ sleep 0.5
 
 node tests/00-basic.js
 node tests/01-versions.js
+node tests/02-export.js
 
 kill $PID
