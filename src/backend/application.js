@@ -52,7 +52,7 @@ require('./endpoints/import.js')(app, config, services);
 require('./endpoints/export.js')(app, config, services);
 
 // start the server
-app.listen(config.port);
+app.listen(config.port, config.host);
 
 // show that the server is started
 console.log(`[x] server started, available at ${config.url}:${config.port}`);
