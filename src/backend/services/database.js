@@ -184,8 +184,20 @@ class Database
   async queryGroups(params, returnCount = false) {
     let returnSql = returnCount ? 'COUNT(id) as total' : '*';
     let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page * params.per_page}` : "";
-    let condition = "`group` IN (" + params.groups.map(g => '?').join(',') + ")";
     let queryParams = params.groups.slice(0);
+    
+    let condition = "TRUE";
+    
+    if(params.project != null) {
+      condition = "project = ?";
+      queryParams.push(params.project);
+    }
+    if(params.locale != null) {
+      condition += " AND locale = ?";
+      queryParams.push(params.locale);
+    }
+    
+    condition += " AND `group` IN (" + params.groups.map(g => '?').join(',') + ")";
     
     let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
     
