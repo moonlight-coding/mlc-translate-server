@@ -90,19 +90,38 @@ async function test() {
   catch(e) {
     console.log("Received an error:");
     console.log(e.response.data);
-    console.log("We must specify the project, 'all' is not allowed");
+    console.log("We must specify the project, 'all' is not allowed, this is normal :)");
   }
   
-  console.log("query 2");
+  console.log("query admin 'users' group for FR");
   queryResult = await query({
     project: "admin",
+    locale: "fr_FR",
     groups: ["users"]
   });
   console.log(queryResult);
   
-  console.log("query 3");
+  console.log("query admin 'users' group for en_GB");
   queryResult = await query({
     project: "admin",
+    locale: "en_GB",
+    groups: ["users"]
+  });
+  console.log(queryResult);
+  
+  console.log("query admin `users` group with history for FR");
+  queryResult = await query({
+    project: "admin",
+    locale: "fr_FR",
+    groups: ["users"],
+    history: true
+  });
+  console.log(queryResult);
+  
+  console.log("query admin `users` group with history for en_GB");
+  queryResult = await query({
+    project: "admin",
+    locale: "en_GB",
     groups: ["users"],
     history: true
   });

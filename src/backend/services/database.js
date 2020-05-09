@@ -184,7 +184,7 @@ class Database
   async queryGroups(params, returnCount = false) {
     let returnSql = returnCount ? 'COUNT(id) as total' : '*';
     let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page * params.per_page}` : "";
-    let queryParams = params.groups.slice(0);
+    let queryParams = [];
     
     let condition = "TRUE";
     
@@ -196,6 +196,8 @@ class Database
       condition += " AND locale = ?";
       queryParams.push(params.locale);
     }
+    
+    queryParams = queryParams.concat(params.groups);
     
     condition += " AND `group` IN (" + params.groups.map(g => '?').join(',') + ")";
     
