@@ -71,12 +71,15 @@ sudo npm link
 ## Usage
 
 ```
-mlc-translate-server [config_path]
+mlc-translate-server server [config_path]
+mlc-translate-server list <config_path>
+mlc-translate-server export <config_path> <locale> <project> [outfile]
+mlc-translate-server import <config_path> <locale> <project> <translationsFile>
 ```
 
 ### Git installation
 
-By default, you can create a `config.js` in this folder, use `config.example.js`. The command `mlc-translate-server` uses that default `config.js`.
+By default, you can create a `config.js` in this folder, use `config.example.js`. The command `mlc-translate-server server` uses that default `config.js`.
 
 ### NPM installation
 
