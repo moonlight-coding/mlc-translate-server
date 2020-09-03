@@ -30,6 +30,17 @@ prog
       project: project,
       locale: locale
     });
+    
+    translations = translations.map((t) => {
+      return {
+        "locale": t['locale'],
+        "project": t['project'],
+        "group": t['group'],
+        "key": t['key'],
+        "value": t['value'],
+        "creation_date": t['creation_date']
+      };
+    });
 
     if(args.outfile) {
       fs.writeFileSync(args.outfile, JSON.stringify(translations, null, 2));

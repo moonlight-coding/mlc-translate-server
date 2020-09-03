@@ -88,10 +88,10 @@ class Database
     let promise = new Promise((resolve) => {
 
       let valuesSql = translations.map(() => {
-        return "(?, ?, ?, ?, ?)";
+        return "(?, ?, ?, ?, ?, ?)";
       });
 
-      let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value) VALUES " + valuesSql.join(", "));
+      let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value, creation_date) VALUES " + valuesSql.join(", "));
       let args = [];
 
       translations.forEach((translation) => {
@@ -100,6 +100,7 @@ class Database
         args.push(translation.group);
         args.push(translation.key);
         args.push(translation.value);
+        args.push(translation.creation_date);
       });
 
       args.push(resolve);
@@ -173,7 +174,18 @@ class Database
     let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
 
     if(params.history !== true) {
-      sql = `SELECT ${returnSql} FROM translation WHERE id IN (SELECT MAX(id) FROM translation WHERE ${condition} GROUP BY locale, project, \`group\`, key) ORDER BY id ASC ${limitSql}`;
+      sql = `
+SELECT ${returnSql} 
+FROM translation 
+WHERE 
+  id IN (
+    SELECT MAX(id) 
+    FROM translation 
+    WHERE ${condition} 
+    GROUP BY locale, project, \`group\`, key
+  ) 
+ORDER BY project ASC, locale ASC, \`group\` ASC, key ASC ${limitSql}
+      `;
     }
 
     let stmt = this.db.prepare(sql);
