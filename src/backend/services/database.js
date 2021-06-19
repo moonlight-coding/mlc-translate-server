@@ -95,7 +95,16 @@ class Database
         return "(?, ?, ?, ?, ?, datetime('now'))";
       });
 
-      let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value, creation_date) VALUES " + valuesSql.join(", "));
+      let valuesStr = valuesSql.join(", ");
+
+      let stmt = this.db.prepare(`
+        INSERT 
+        OR IGNORE
+        INTO translation(locale, project, 'group', key, value, creation_date) 
+          VALUES ${valuesStr} 
+        
+      `);
+
       let args = [];
 
       translations.forEach((translation) => {

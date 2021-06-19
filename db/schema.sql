@@ -5,5 +5,6 @@ CREATE TABLE translation(
   'group' TEXT NOT NULL,
   key TEXT NOT NULL,
   value TEXT NOT NULL,
-  creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
+  creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(locale, project, 'group', key, value, creation_date)
 );
