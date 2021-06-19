@@ -87,8 +87,12 @@ class Database
   async createTranslations(locale, project, translations) {
     let promise = new Promise((resolve) => {
 
-      let valuesSql = translations.map(() => {
-        return "(?, ?, ?, ?, ?, ?)";
+      let valuesSql = translations.map((translation) => {
+        if('creation_date' in translation && translation.creation_date != null) {
+          return "(?, ?, ?, ?, ?, ?)";
+        }
+
+        return "(?, ?, ?, ?, ?, datetime('now'))";
       });
 
       let stmt = this.db.prepare("INSERT INTO translation(locale, project, 'group', key, value, creation_date) VALUES " + valuesSql.join(", "));
@@ -100,7 +104,10 @@ class Database
         args.push(translation.group);
         args.push(translation.key);
         args.push(translation.value);
-        args.push(translation.creation_date);
+        
+        if('creation_date' in translation && translation.creation_date != null) {
+          args.push(translation.creation_date);
+        }
       });
 
       args.push(resolve);
