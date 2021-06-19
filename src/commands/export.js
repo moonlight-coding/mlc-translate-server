@@ -11,6 +11,7 @@ prog
   .argument('<locale>', 'the locale')
   .argument('<project>', 'the project')
   .argument('[outfile]', 'outfile')
+  .option('--versions', 'exports all the versions, to maintain full history')
   //.argument('[env]', 'Environment to deploy on', /^dev|staging|production$/, 'local')
   //.option('--tail <lines>', 'Tail <lines> lines of logs after deploy', prog.INT)
   .action(async function(args, options, logger) {
@@ -26,10 +27,16 @@ prog
     let project = args.project;
     let locale = args.locale;
 
-    let translations = await services.database.query({
+    let params = {
       project: project,
       locale: locale
-    });
+    };
+
+    if(options.versions) {
+      params.history = true;
+    }
+
+    let translations = await services.database.query(params);
     
     translations = translations.map((t) => {
       return {
@@ -43,9 +50,9 @@ prog
     });
 
     if(args.outfile) {
-      fs.writeFileSync(args.outfile, JSON.stringify(translations, null, 2));
+      fs.writeFileSync(args.outfile, JSON.stringify(translations));
     }
     else {
-      console.log(JSON.stringify(translations, null, 2));
+      console.log(JSON.stringify(translations));
     }
   });

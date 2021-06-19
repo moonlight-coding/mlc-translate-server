@@ -187,7 +187,7 @@ class Database
 
     let returnSql = returnCount ? 'COUNT(id) as total' : '*';
     let limitSql = params.per_page ? `LIMIT ${params.per_page} OFFSET ${params.page * params.per_page}` : "";
-    let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY id ASC ${limitSql}`;
+    let sql = `SELECT ${returnSql} FROM translation WHERE ${condition} ORDER BY project ASC, locale ASC, \`group\` ASC, key ASC, id ASC ${limitSql}`;
 
     if(params.history !== true) {
       sql = `
@@ -200,7 +200,7 @@ WHERE
     WHERE ${condition} 
     GROUP BY locale, project, \`group\`, key
   ) 
-ORDER BY project ASC, locale ASC, \`group\` ASC, key ASC ${limitSql}
+ORDER BY project ASC, locale ASC, \`group\` ASC, key ASC, id ASC ${limitSql}
       `;
     }
 

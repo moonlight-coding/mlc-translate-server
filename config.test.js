@@ -3,5 +3,5 @@ const path = require('path');
 module.exports = {
   url: 'http://localhost',
   port: 3001,
-  db: ':memory:'
+  db: path.join(__dirname, 'context', 'db.test.sqlite3')
 };
