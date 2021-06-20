@@ -39,7 +39,7 @@ test('export before import', async () => {
   ]);
 });
 
-test('commitable-json export', async () => {
+test('commit-json export', async () => {
   let ret = translateCmd("export", confPath, "en_GB", "import", "--commitable-json");
 
   expect(ret.status).toBe(0);
@@ -47,10 +47,10 @@ test('commitable-json export', async () => {
   let json = ret.stdout.toString();
   json = json.replace(/"creation_date":"(.*?)"/g, '"creation_date":"DEFINED"');
 
-  expect(json).toBe(`{
+  expect(json).toBe(`[
   {"locale":"en_GB","project":"import","group":"users","key":"key","value":"value1","creation_date":"DEFINED"},
   {"locale":"en_GB","project":"import","group":"users","key":"key2","value":"value2","creation_date":"DEFINED"}
-}
+]
 `
   );
 

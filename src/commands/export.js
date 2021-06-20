@@ -12,7 +12,7 @@ prog
   .argument('<project>', 'the project')
   .argument('[outfile]', 'outfile')
   .option('--versions', 'exports all the versions, to maintain full history')
-  .option('--commitable-json', 'the json is formated in a way it is easily commitable in git')
+  .option('--commit-json', 'the json is formated in a way it is easily commitable in git')
   //.argument('[env]', 'Environment to deploy on', /^dev|staging|production$/, 'local')
   //.option('--tail <lines>', 'Tail <lines> lines of logs after deploy', prog.INT)
   .action(async function(args, options, logger) {
@@ -66,5 +66,5 @@ function toCommitableJson(translations)
     return "  " + JSON.stringify(translation);
   }).join(",\n");
 
-  return "{\n" + lines + "\n}";
+  return "[\n" + lines + "\n]";
 }
