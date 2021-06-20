@@ -12,6 +12,7 @@ prog
   .argument('<project>', 'the project')
   .argument('[outfile]', 'outfile')
   .option('--versions', 'exports all the versions, to maintain full history')
+  .option('--commitable-json', 'the json is formated in a way it is easily commitable in git')
   //.argument('[env]', 'Environment to deploy on', /^dev|staging|production$/, 'local')
   //.option('--tail <lines>', 'Tail <lines> lines of logs after deploy', prog.INT)
   .action(async function(args, options, logger) {
@@ -37,7 +38,7 @@ prog
     }
 
     let translations = await services.database.query(params);
-    
+
     translations = translations.map((t) => {
       return {
         "locale": t['locale'],
@@ -49,10 +50,21 @@ prog
       };
     });
 
+    let json = options.commitableJson ? toCommitableJson(translations) : JSON.stringify(translations);
+
     if(args.outfile) {
-      fs.writeFileSync(args.outfile, JSON.stringify(translations));
+      fs.writeFileSync(args.outfile, json);
     }
     else {
-      console.log(JSON.stringify(translations));
+      console.log(json);
     }
   });
+
+function toCommitableJson(translations)
+{
+  let lines = translations.map((translation) => {
+    return "  " + JSON.stringify(translation);
+  }).join(",\n");
+
+  return "{\n" + lines + "\n}";
+}
