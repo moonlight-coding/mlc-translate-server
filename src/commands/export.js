@@ -50,7 +50,7 @@ prog
       };
     });
 
-    let json = options.commitableJson ? toCommitableJson(translations) : JSON.stringify(translations);
+    let json = options.commitJson ? toCommitableJson(translations) : JSON.stringify(translations);
 
     if(args.outfile) {
       fs.writeFileSync(args.outfile, json);

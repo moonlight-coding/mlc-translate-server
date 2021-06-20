@@ -40,7 +40,7 @@ test('export before import', async () => {
 });
 
 test('commit-json export', async () => {
-  let ret = translateCmd("export", confPath, "en_GB", "import", "--commitable-json");
+  let ret = translateCmd("export", confPath, "en_GB", "import", "--commit-json");
 
   expect(ret.status).toBe(0);
 

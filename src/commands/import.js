@@ -43,6 +43,9 @@ prog
       translations
     );
 
+    if(lastTranslation == null)
+      return;
+
     let groups = [];
 
     for(let translation of translations) {

@@ -85,6 +85,11 @@ class Database
   }
 
   async createTranslations(locale, project, translations) {
+
+    if(translations.length == 0) {
+      return null;
+    }
+
     let promise = new Promise((resolve) => {
 
       let valuesSql = translations.map((translation) => {
@@ -98,11 +103,11 @@ class Database
       let valuesStr = valuesSql.join(", ");
 
       let stmt = this.db.prepare(`
-        INSERT 
+        INSERT
         OR IGNORE
-        INTO translation(locale, project, 'group', key, value, creation_date) 
-          VALUES ${valuesStr} 
-        
+        INTO translation(locale, project, 'group', key, value, creation_date)
+          VALUES ${valuesStr}
+
       `);
 
       let args = [];
@@ -113,7 +118,7 @@ class Database
         args.push(translation.group);
         args.push(translation.key);
         args.push(translation.value);
-        
+
         if('creation_date' in translation && translation.creation_date != null) {
           args.push(translation.creation_date);
         }
@@ -191,15 +196,15 @@ class Database
 
     if(params.history !== true) {
       sql = `
-SELECT ${returnSql} 
-FROM translation 
-WHERE 
+SELECT ${returnSql}
+FROM translation
+WHERE
   id IN (
-    SELECT MAX(id) 
-    FROM translation 
-    WHERE ${condition} 
+    SELECT MAX(id)
+    FROM translation
+    WHERE ${condition}
     GROUP BY locale, project, \`group\`, key
-  ) 
+  )
 ORDER BY project ASC, locale ASC, \`group\` ASC, key ASC, id ASC ${limitSql}
       `;
     }
